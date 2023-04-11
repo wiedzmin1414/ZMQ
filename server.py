@@ -18,25 +18,20 @@ def get_adress_and_cord_from_message(message):
 # Prepare our context and sockets
 context = zmq.Context()
 frontend = context.socket(zmq.ROUTER)
-frontend.bind("tcp://*:5789")
+frontend.bind("tcp://*:5799")
 
 requests = {}
-
-# Switch messages between sockets
 number_of_clients = 2
-number_of_requests = 0
 
-while number_of_requests < number_of_clients:
+for i in range(number_of_clients):
         message = frontend.recv_multipart()
         print(f"Receive message: {message}")
         adress, corrds = get_adress_and_cord_from_message(message)
         
-        number_of_requests += 1
         if corrds not in requests:
             requests[corrds] = [adress]
         else:
             requests[corrds].append(adress)
-        #frontend.send_multipart(message)
         
 for corrds, adresses in requests.items():
     for adress in adresses:
@@ -45,5 +40,3 @@ for corrds, adresses in requests.items():
         message = [adress, b"", is_request_unique]
         frontend.send_multipart(message)
         
-
-    

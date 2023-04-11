@@ -11,7 +11,7 @@ import random
 #  Prepare our context and sockets
 context = zmq.Context()
 socket = context.socket(zmq.REQ)
-socket.connect("tcp://localhost:5789")
+socket.connect("tcp://localhost:5799")
 
 x = random.randint(1, 10)
 y = random.randint(1, 10)
