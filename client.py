@@ -8,19 +8,29 @@ Created on Fri Apr  7 13:13:50 2023
 import zmq
 import random
 
-#  Prepare our context and sockets
-context = zmq.Context()
-socket = context.socket(zmq.REQ)
-socket.connect("tcp://localhost:5799")
+class Client:
+    def __init__(self, socket_adress):
+        #  Prepare our context and sockets
+        self.socket_adress = socket_adress
+        context = zmq.Context()
+        self.socket = context.socket(zmq.REQ)
+        self.socket.connect(self.socket_adress)
+        
+    def send_message_and_wait_for_answer(self):
 
-x = random.randint(1, 10)
-y = random.randint(1, 10)
+        x = random.randint(1, 10)
+        y = random.randint(1, 10)
+        
+        message = f"{x},{y}"
+        
+        print(f"Send request {message}")
+        self.socket.send_string(message)
+        print("Waiting for a response from the server")
+        message_rep = self.socket.recv()
+        answer = message_rep == bytes([True])
+        print(f"Response received: {answer}")
+        
 
-message = f"{x},{y}"
-
-print(f"Send request {message}")
-socket.send_string(message)
-print("Wait for answer from the server")
-message_rep = socket.recv()
-answer = message_rep == b"1"
-print(f"Received reply: {answer}")
+if __name__ == "__main__":
+    client = Client("tcp://localhost:5799")
+    client.send_message_and_wait_for_answer()

@@ -15,28 +15,36 @@ def get_adress_and_cord_from_message(message):
     corrds = (int(x), int(y))
     return byte_adress, corrds
 
-# Prepare our context and sockets
-context = zmq.Context()
-frontend = context.socket(zmq.ROUTER)
-frontend.bind("tcp://*:5799")
-
-requests = {}
-number_of_clients = 2
-
-for i in range(number_of_clients):
-        message = frontend.recv_multipart()
-        print(f"Receive message: {message}")
-        adress, corrds = get_adress_and_cord_from_message(message)
+class Server:
+    def __init__(self, socket_adress, number_of_clients):
+        # Prepare our context and sockets
+        self.socket_adress = socket_adress
+        context = zmq.Context()
+        self.socket = context.socket(zmq.ROUTER)
+        self.socket.bind(self.socket_adress)
+        self.requests = {}
+        self.number_of_clients = number_of_clients
+    
+    def run(self):
+        print("Server has been turned on")
+        for i in range(self.number_of_clients):
+                message = self.socket.recv_multipart()
+                print(f"Receive message: {message}")
+                adress, coordination = get_adress_and_cord_from_message(message)
+                if coordination not in self.requests:
+                    self.requests[coordination] = [adress]
+                else:
+                    self.requests[coordination].append(adress)
+        print("All requests were collected")
+        # Answer for each requests
+        for coordination, adresses in self.requests.items():
+            for adress in adresses:
+                is_request_unique = bytes([True]) if len(adresses) == 1 else bytes([False])
+                message = [adress, b"", is_request_unique]
+                self.socket.send_multipart(message)
         
-        if corrds not in requests:
-            requests[corrds] = [adress]
-        else:
-            requests[corrds].append(adress)
+        print("Server has been turned off")
         
-for corrds, adresses in requests.items():
-    for adress in adresses:
-        is_request_unique = b'1' if len(adresses) == 1 else b'0'
-        
-        message = [adress, b"", is_request_unique]
-        frontend.send_multipart(message)
-        
+if __name__ == "__main__":
+    server = Server("tcp://*:5799", number_of_clients=2)
+    server.run()
