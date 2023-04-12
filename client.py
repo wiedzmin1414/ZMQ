@@ -8,10 +8,11 @@ Created on Fri Apr  7 13:13:50 2023
 import zmq
 import random
 
+
 class Client:
-    def __init__(self, socket_adress):
+    def __init__(self, socket_address):
         #  Prepare our context and sockets
-        self.socket_adress = socket_adress
+        self.socket_adress = socket_address
         context = zmq.Context()
         self.socket = context.socket(zmq.REQ)
         self.socket.connect(self.socket_adress)
