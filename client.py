@@ -15,8 +15,9 @@ class Client:
         context = zmq.Context()
         self.socket = context.socket(zmq.REQ)
         self.socket.connect(self.socket_adress)
+        self.response = True
         
-    def send_message_and_wait_for_answer(self):
+    def send_message_and_wait_for_response(self):
 
         x = random.randint(1, 10)
         y = random.randint(1, 10)
@@ -27,10 +28,10 @@ class Client:
         self.socket.send_string(message)
         print("Waiting for a response from the server")
         message_rep = self.socket.recv()
-        answer = message_rep == bytes([True])
-        print(f"Response received: {answer}")
+        self.response = message_rep == bytes([True])
+        print(f"Response received: {self.response}")
         
 
 if __name__ == "__main__":
     client = Client("tcp://localhost:5799")
-    client.send_message_and_wait_for_answer()
+    client.send_message_and_wait_for_response()
