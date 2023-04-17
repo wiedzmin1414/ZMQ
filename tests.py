@@ -8,6 +8,7 @@ Created on Tue Apr 11 14:34:17 2023
 import server
 import unittest
 import client
+from unittest.mock import Mock
 
 
 class Test_get_address_and_coordinates_from_message(unittest.TestCase):
@@ -15,7 +16,7 @@ class Test_get_address_and_coordinates_from_message(unittest.TestCase):
         self.message = [b'\x00\x00\x00\x12\xdb', b'', b'7,8']
         
     def test_get_address_and_coordinates_from_message(self):
-        address, coordinates = server.get_address_and_cord_from_message(self.message)
+        address, coordinates = server.get_address_and_coords_from_message(self.message)
         self.assertEqual(address, b'\x00\x00\x00\x12\xdb')
         self.assertEqual(coordinates, (7, 8))
 
@@ -85,7 +86,7 @@ class ZmqDoubleREQ(ZmqDouble):
         return self.message_to_recv
     
     
-class TestClientTrue(unittest.TestCase):
+class TestClientUniqueRequest(unittest.TestCase):
     def setUp(self):
         message_to_recv = bytes([True])
         client.zmq = ZmqDoubleREQ(message_to_recv)
@@ -97,7 +98,7 @@ class TestClientTrue(unittest.TestCase):
         self.assertTrue(my_client.response)
 
 
-class TestClientFalse(unittest.TestCase):
+class TestClientNotUniqueRequest(unittest.TestCase):
     def setUp(self):
         message_to_recv = bytes([False])
         client.zmq = ZmqDoubleREQ(message_to_recv)
