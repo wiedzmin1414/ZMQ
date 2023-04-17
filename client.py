@@ -16,7 +16,7 @@ class Client:
         self.context = zmq.Context()
         self.socket = self.context.socket(zmq.REQ)
         self.socket.connect(self.socket_address)
-        self.response = True
+        self.response = None
         
     def send_message_and_wait_for_response(self):
 
