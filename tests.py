@@ -10,11 +10,11 @@ import unittest
 import client
 
 
-class Test_get_address_and_cord_from_message(unittest.TestCase):
+class Test_get_address_and_coordinates_from_message(unittest.TestCase):
     def setUp(self):
         self.message = [b'\x00\x00\x00\x12\xdb', b'', b'7,8']
         
-    def test_get_adress_and_cord_from_message(self):
+    def test_get_address_and_coordinates_from_message(self):
         address, coordinates = server.get_address_and_cord_from_message(self.message)
         self.assertEqual(address, b'\x00\x00\x00\x12\xdb')
         self.assertEqual(coordinates, (7, 8))
