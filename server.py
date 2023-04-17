@@ -23,11 +23,14 @@ class Server:
         self.socket_address = socket_address
         context = zmq.Context()
         self.socket = context.socket(zmq.ROUTER)
-        self.socket.bind(self.socket_address)
         self.requests = {}
         self.number_of_clients = number_of_clients
 
+    def bind(self):
+        self.socket.bind(self.socket_address)
+
     def run(self):
+        self.bind()
         print("Server has been turned on")
         for i in range(self.number_of_clients):
             message = self.socket.recv_multipart()
