@@ -8,7 +8,7 @@ Created on Fri Apr  7 13:14:40 2023
 import zmq
 
 
-def get_address_and_cord_from_message(message):
+def get_address_and_coords_from_message(message):
     byte_address = message[0]
     byte_coordinates = message[2]
     str_coordinates = byte_coordinates.decode("utf-8")
@@ -32,7 +32,7 @@ class Server:
         for i in range(self.number_of_clients):
             message = self.socket.recv_multipart()
             print(f"Receive message: {message}")
-            address, coordinates = get_address_and_cord_from_message(message)
+            address, coordinates = get_address_and_coords_from_message(message)
             if coordinates not in self.requests:
                 self.requests[coordinates] = [address]
             else:
