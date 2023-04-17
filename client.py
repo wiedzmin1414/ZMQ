@@ -13,8 +13,8 @@ class Client:
     def __init__(self, socket_address):
         #  Prepare our context and sockets
         self.socket_address = socket_address
-        context = zmq.Context()
-        self.socket = context.socket(zmq.REQ)
+        self.context = zmq.Context()
+        self.socket = self.context.socket(zmq.REQ)
         self.socket.connect(self.socket_address)
         self.response = True
         

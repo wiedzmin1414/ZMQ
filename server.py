@@ -21,8 +21,8 @@ class Server:
     def __init__(self, socket_address, number_of_clients):
         # Prepare our context and sockets
         self.socket_address = socket_address
-        context = zmq.Context()
-        self.socket = context.socket(zmq.ROUTER)
+        self.context = zmq.Context()
+        self.socket = self.context.socket(zmq.ROUTER)
         self.requests = {}
         self.number_of_clients = number_of_clients
 
