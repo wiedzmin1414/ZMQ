@@ -12,10 +12,10 @@ import random
 class Client:
     def __init__(self, socket_address):
         #  Prepare our context and sockets
-        self.socket_adress = socket_address
+        self.socket_address = socket_address
         context = zmq.Context()
         self.socket = context.socket(zmq.REQ)
-        self.socket.connect(self.socket_adress)
+        self.socket.connect(self.socket_address)
         self.response = True
         
     def send_message_and_wait_for_response(self):
