@@ -32,6 +32,10 @@ class Client:
         self.response = message_rep == bytes([True])
         print(f"Response received: {self.response}")
         
+    def close_connection(self):
+        self.socket.close()
+        self.context.term()
+        
 
 if __name__ == "__main__":
     client = Client("tcp://localhost:5799")

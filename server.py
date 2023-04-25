@@ -50,6 +50,10 @@ class Server:
 
         print("Server has been turned off")
 
+    def close_connection(self):
+        self.socket.close()
+        self.context.term()
+
 
 if __name__ == "__main__":
     server = Server("tcp://*:5799", number_of_clients=2)
