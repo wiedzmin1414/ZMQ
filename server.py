@@ -56,5 +56,5 @@ class Server:
 
 
 if __name__ == "__main__":
-    server = Server("tcp://*:5799", number_of_clients=2)
+    server = Server("tcp://*:5799", number_of_clients=3)
     server.run()
