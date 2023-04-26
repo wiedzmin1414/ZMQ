@@ -15,11 +15,13 @@ class Client:
         self.socket_address = socket_address
         self.context = zmq.Context()
         self.socket = self.context.socket(zmq.REQ)
-        self.socket.connect(self.socket_address)
         self.response = None
-        
-    def send_message_and_wait_for_response(self):
 
+    def connect(self):
+        self.socket.connect(self.socket_address)
+
+    def send_message_and_wait_for_response(self):
+        self.connect()
         x = random.randint(1, 10)
         y = random.randint(1, 10)
         
@@ -31,7 +33,7 @@ class Client:
         message_rep = self.socket.recv()
         self.response = message_rep == bytes([True])
         print(f"Response received: {self.response}")
-        
+
     def close_connection(self):
         self.socket.close()
         self.context.term()
