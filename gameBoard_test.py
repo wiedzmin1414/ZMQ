@@ -303,6 +303,48 @@ class TestBoardGame(unittest.TestCase):
         board = gameBoard.GameBoard(10, 10)
         client = 'client'
         board.add_client(client)
-        board.get_positions(client)
+        client_position = board.get_positions(client)
+        expected_position = gameBoard.Position(4, 5)
+        self.assertIn(expected_position, client_position)
+
+    def test_returning_position_for_three_client(self):
+        gameBoard.random.randint = Mock(side_effect=[4, 5, 2, 1, 3, 7])
+        board = gameBoard.GameBoard(10, 10)
+        clients = [f'client{number}' for number in range(3)]
+        for client in clients:
+            board.add_client(client)
+        positions = board.get_positions('client0')
+        client_position = positions[0]
+        other_positions = positions[1:]
+        client_expected_position = gameBoard.Position(4, 5)
+        other_expected_positions = [gameBoard.Position(2, 1), gameBoard.Position(3, 7)]
+        self.assertEqual(client_expected_position, client_position)
+        self.assertCountEqual(other_positions, other_expected_positions)
+
+    def test_process_requests_when_there_is_one_client_and_he_requests_for_positions(self):
+        gameBoard.random.randint = Mock(side_effect=[6, 7])
+        board = gameBoard.GameBoard(10, 10)
+        client = 'client'
+        board.add_client(client)
+        requests = {client: 'p'}
+        output = board.process_request(requests)
+        expected_output = [gameBoard.Position(6, 7)]
+        self.assertEqual(expected_output, output[client])
+
+    def test_process_requests_when_there_are_3_clients_and_everyone_request_for_positions(self):
+        gameBoard.random.randint = Mock(side_effect=[4, 5, 2, 1, 3, 7])
+        board = gameBoard.GameBoard(10, 10)
+        clients = [f'client{number}' for number in range(3)]
+        requests = {}
+        for client in clients:
+            board.add_client(client)
+            requests[client] = 'p'
+        output = board.process_request(requests)
+        expected_output = [gameBoard.Position(4, 5), gameBoard.Position(2, 1), gameBoard.Position(3, 7)]
+        for number, client in enumerate(clients):
+            client_output = output[client]
+            self.assertEqual(client_output[0], expected_output[number])
+            other_positions = expected_output[:number] + expected_output[number+1:]
+            self.assertCountEqual(client_output[1:], other_positions)
 
 

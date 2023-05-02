@@ -116,9 +116,17 @@ class GameBoard:
                     output[client] = 'ok'
             else:
                 output[client] = 'nok'
+        for client, request in requests.items():
+            if request == 'p':
+                output[client] = self.get_positions(client)
         return output
 
     def get_positions(self, client):
+        client_position = self.get_client_position(client)
+        other_positions = self.clients_positions.copy()
+        del other_positions[client]
+        return [client_position] + list(other_positions.values())
+
 
 
 

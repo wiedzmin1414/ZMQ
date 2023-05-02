@@ -16,7 +16,7 @@ class GameServer(server.Server):
 
     def establish_connection_with_clients(self):
         flag = True
+
         while flag:
-            try:
-                message = self.socket.recv_multipart()
-                print(message)
+            message = self.socket.recv_multipart()
+            print(message)
