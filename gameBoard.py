@@ -1,5 +1,5 @@
 import random
-
+import collections
 
 class Position:
     def __init__(self, x, y):
@@ -11,6 +11,12 @@ class Position:
 
     def __repr__(self):
         return f"({self.x}, {self.y})"
+
+    def __hash__(self):
+        return hash((self.x, self.y))
+
+    def copy(self):
+        return Position(self.x, self.y)
 
     def is_neighbor(self, other):
         x_diff = abs(self.x - other.x)
@@ -37,13 +43,13 @@ class Position:
 
     def move(self, direction):
         direction = direction.lower()
-        if direction == 'w':
+        if direction in 'wu':
             self.move_up()
-        if direction == 's':
+        if direction in 's':
             self.move_down()
-        if direction == 'a':
+        if direction in 'al':
             self.move_left()
-        if direction == 'd':
+        if direction in 'dr':
             self.move_right()
 
 
@@ -57,6 +63,9 @@ class GameBoard:
         self.max_players = (x//3) * (y//3)
         self.number_of_players = 0
 
+    def log(self, message):
+        print(message)
+
     def is_position_in_board(self, position):
         return 0 <= position.x < self.x and 0 <= position.y < self.y
 
@@ -67,21 +76,49 @@ class GameBoard:
         return self.clients_positions[client_name]
 
     def get_available_position_to_spawn_player(self):
-        x = random.randint(0, self.x-1)
-        y = random.randint(0, self.y-1)
-        position = Position(x, y)
-        if position not in self.not_available_positions_to_spawn:
-            self.not_available_positions_to_spawn.append(position)
-            self.not_available_positions_to_spawn += position.return_neighboring_positions()
-            return position
+        while True:
+            x = random.randint(0, self.x-1)
+            y = random.randint(0, self.y-1)
+            position = Position(x, y)
+            if position not in self.not_available_positions_to_spawn:
+                self.not_available_positions_to_spawn.append(position)
+                self.not_available_positions_to_spawn += position.return_neighboring_positions()
+                return position
 
     def add_client(self, client_id):
-        if self.number_of_players <= self.max_players:
+        if self.number_of_players < self.max_players:
             position = self.get_available_position_to_spawn_player()
             self.clients_positions[client_id] = position
-            self.max_players += 1
-            return True
+            self.number_of_players += 1
         else:
+            self.log(f"There is already maximum number of clients connected: {self.number_of_players}")
             return False
+
+    def process_request(self, requests):
+        new_clients_positions = self.clients_positions.copy()
+
+        output = {}
+        for client, request in requests.items():
+            old_position = self.clients_positions[client]
+            new_position = old_position.copy()
+            new_position.move(request)
+            if self.is_position_in_board(new_position):
+                new_clients_positions[client] = new_position
+            else:
+                output[client] = 'nok'
+        occupied_positions = new_clients_positions.values()
+        counts_position = collections.Counter(occupied_positions).items()
+        collisions = [position for position, count in counts_position if count > 1]
+        for client, new_candidate_position in new_clients_positions.items():
+            if new_candidate_position not in collisions:
+                if client not in output:
+                    self.clients_positions[client] = new_candidate_position
+                    output[client] = 'ok'
+            else:
+                output[client] = 'nok'
+        return output
+
+    def get_positions(self, client):
+
 
 
