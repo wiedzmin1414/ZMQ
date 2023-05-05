@@ -23,6 +23,7 @@ class Server:
         self.socket_address = socket_address
         self.context = zmq.Context()
         self.socket = self.context.socket(zmq.ROUTER)
+
         self.requests = {}
         self.number_of_clients = number_of_clients
 

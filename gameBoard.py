@@ -126,7 +126,3 @@ class GameBoard:
         other_positions = self.clients_positions.copy()
         del other_positions[client]
         return [client_position] + list(other_positions.values())
-
-
-
-
