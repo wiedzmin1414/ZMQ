@@ -6,9 +6,9 @@ from unittest.mock import Mock
 
 class TestGameServer(unittest.TestCase):
     def test_get_address_and_requests_from_message(self):
-        message = ['address', 'zero_byte', b'r']
+        message = [b'address', b'', b'r']
         address, message = gameServer.get_address_and_request_from_message(message)
-        expected_address, expected_message = 'address', 'r'
+        expected_address, expected_message = b'address', 'r'
         self.assertEqual(address, expected_address)
         self.assertEqual(message, expected_message)
 

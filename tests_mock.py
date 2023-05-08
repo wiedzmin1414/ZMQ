@@ -87,3 +87,12 @@ class TestClientNotUniqueRequest(unittest.TestCase):
         self.client.send_message_and_wait_for_response()
         self.assertNotEqual(self.client.response, None)
         self.assertFalse(self.client.response)
+
+
+if __name__ == "__main__":
+    import gameServer
+    server = gameServer.GameServer("tcp://*:593", 30, 3)
+    try:
+        server.run()
+    finally:
+        server.close_connection()

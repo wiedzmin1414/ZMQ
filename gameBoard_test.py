@@ -346,5 +346,3 @@ class TestBoardGame(unittest.TestCase):
             self.assertEqual(client_output[0], expected_output[number])
             other_positions = expected_output[:number] + expected_output[number+1:]
             self.assertCountEqual(client_output[1:], other_positions)
-
-

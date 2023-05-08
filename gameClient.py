@@ -30,7 +30,4 @@ class GameClient(client.Client):
 
 if __name__ == "__main__":
     client = GameClient("tcp://localhost:5793")
-    client.connect()
-    while True:
-        keyb = get_input_from_keyboard()
-        client.send_request_and_wait_for_answer(keyb)
+    client.play_game()
